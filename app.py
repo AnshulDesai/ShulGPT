@@ -6,27 +6,16 @@ from openai import error
 from dotenv import load_dotenv
 
 load_dotenv()
-project_id = '691243698079'
-
-import google.auth
-from google.cloud import secretmanager_v1beta1 as secretmanager
-
-# def access_secret_version(secret_id):
-#     _, project_id = google.auth.default()
-#     client = secretmanager.SecretManagerServiceClient()
-#     secret_name = f"projects/{project_id}/secrets/{secret_id}/versions/latest"
-#     response = client.access_secret_version(name=secret_name)
-#     return response.payload.data.decode('UTF-8')
 
 app = Flask(__name__)
-openai.api_key = os.getenv('OPENAI_API_KEY')# or access_secret_version('OPENAI_API_KEY')
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
         submitted_password = request.form.get("password")
-        if submitted_password == os.getenv("PAGE_PASSWORD"): # or submitted_password == access_secret_version('PAGE_PASSWORD'):
+        if submitted_password == os.getenv("PAGE_PASSWORD"):
             return render_template("index.html")
         else:
             return render_template("login.html", error="Invalid password.")
