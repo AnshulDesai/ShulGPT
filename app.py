@@ -6,7 +6,7 @@ from openai import error
 from dotenv import load_dotenv
 
 load_dotenv()
-project_id = 'shul-gpt'
+project_id = '691243698079'
 
 import google.auth
 from google.cloud import secretmanager_v1beta1 as secretmanager
