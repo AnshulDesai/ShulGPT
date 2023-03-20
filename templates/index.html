@@ -349,6 +349,22 @@
 
         $("#text-form").addClass("animated fadeIn");
         $("button").addClass("animated fadeIn");
+
+        function isRunningLocally() {
+            return window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+        }
+
+        function updateSliderAvailability() {
+            if (isRunningLocally()) {
+                $("#max_tokens_range").removeAttr("disabled");
+                $("#max_tokens_number").removeAttr("disabled");
+            } else {
+                $("#max_tokens_range").attr("disabled", true);
+                $("#max_tokens_number").attr("disabled", true);
+            }
+        }
+
+        updateSliderAvailability();
     </script>
 </body>
 

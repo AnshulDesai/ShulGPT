@@ -11,9 +11,16 @@ app = Flask(__name__)
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template("index.html")
+    if request.method == "POST":
+        submitted_password = request.form.get("password")
+        if submitted_password == os.getenv("PAGE_PASSWORD"):
+            return render_template("index.html")
+        else:
+            return render_template("login.html", error="Invalid password.")
+    else:
+        return render_template("login.html")
 
 
 @app.route("/generate-text", methods=["POST"])
