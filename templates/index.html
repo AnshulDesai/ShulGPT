@@ -257,7 +257,7 @@
                         value="You are a helpful assistant." required>
                 </div>
                 <div class="form-group">
-                    <label for="max_tokens">Max Tokens:</label>
+                    <label for="max_tokens" id="max_tokens_label">Max Tokens:</label>
                     <input type="range" id="max_tokens_range" name="max_tokens_range" min="1" max="2048" value="256"
                         class="form-range">
                     <input type="number" id="max_tokens_number" name="max_tokens_number" min="1" max="2048" value="256"
@@ -363,9 +363,11 @@
             if (isRunningLocally()) {
                 $("#max_tokens_range").removeAttr("disabled");
                 $("#max_tokens_number").removeAttr("disabled");
+                $("#max_tokens_label").show();
             } else {
                 $("#max_tokens_range").attr("disabled", true).hide();
                 $("#max_tokens_number").attr("disabled", true).hide();
+                $("#max_tokens_label").hide();
             }
         }
 
