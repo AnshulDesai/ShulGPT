@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ShulGPT</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -15,7 +15,7 @@
         body,
         html {
             height: 100%;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #212121 0%, #303030 100%);
             color: #f0f0f0;
         }
@@ -23,7 +23,11 @@
         h1 {
             margin-bottom: 1rem;
             font-size: 2rem;
-            color: #009688;
+            background-image: linear-gradient(135deg, #4db6ac 0%, #26a69a 100%);
+            /* Lighten the gradient colors */
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2);
         }
 
         .container {
@@ -54,13 +58,45 @@
             margin-top: 1rem;
             border: 1px solid #424242;
             padding: 1rem;
-            border-radius: 5px;
+            border-radius: 1.6em;
             background-color: #333;
             white-space: pre-wrap;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-height: 0;
+            /* Add max-height property */
+            transition: max-height 0.5s ease-in-out;
+            /* Add transition for smooth expanding */
+        }
+
+        .user-message-container {
+            text-align: right;
+            background-image: linear-gradient(225deg, rgba(0, 150, 136, 0.5) 0%, rgba(0, 121, 107, 0.0) 100%);
+            padding: 0.5rem 1.25rem;
+            font-size: 0.8em;
+            border-radius: 1.6em;
+            width: fit-content;
+            max-width: 100%;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-end;
+            line-height: 2;
+        }
+
+        .chatbot-message-container {
+            text-align: left;
+            background-image: linear-gradient(315deg, rgba(255, 255, 255, 0.0) 0%, rgba(255, 255, 255, 0.2) 100%);
+            padding: 0.5rem 1.25rem;
+            font-size: 0.8em;
+            border-radius: 1.6em;
+            width: fit-content;
+            max-width: 100%;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 2;
         }
 
         /* Custom scrollbar */
@@ -69,71 +105,53 @@
         }
 
         #conversation::-webkit-scrollbar-thumb {
-            background-color: #009688;
+            background-color: #4db6ac;
             border-radius: 4px;
         }
 
         .btn-primary {
-            background-color: #009688;
-            border-color: #009688;
+            background-image: linear-gradient(135deg, #4db6ac 0%, #26a69a 100%);
+            border-color: #4db6ac;
         }
 
         .btn-primary:hover {
-            background-color: #00796b;
-            border-color: #00796b;
+            background-image: linear-gradient(135deg, #26a69a 0%, #009688 100%);
+            border-color: #26a69a;
         }
 
         .btn-primary:focus {
-            box-shadow: 0 0 0 0.25rem rgba(0, 150, 136, 0.25);
+            box-shadow: 0 0 0 0.25rem rgba(77, 182, 172, 0.25);
         }
+
 
         .form-control {
             background-color: #424242;
             color: #f0f0f0;
-            border-color: #424242;
+            padding: 0.25em 1.2em;
+            box-shadow: 0 0 0 0.25rem rgba(0, 150, 136, 0.25);
         }
 
         .form-control:focus {
             background-color: #424242;
             color: #f0f0f0;
-            border-color: #009688;
-            box-shadow: 0 0 0 0.25rem rgba(0, 150, 136, 0.25);
+            border-color: #4db6ac;
+            box-shadow: 0 0 0 0.25rem rgba(77, 182, 172, 0.25);
         }
 
         .user-message {
-            color: #009688;
+            color: #4db6ac;
             word-wrap: break-word;
             font-size: 0.8em;
+            margin: 0.5rem 0rem;
+            /* Increase margin for user messages */
         }
 
         .chatbot-message {
-            color: #009688;
+            color: #4db6ac;
             word-wrap: break-word;
             font-size: 0.8em;
-        }
-
-        .user-message-container {
-            text-align: right;
-            background-color: rgba(0, 150, 136, 0.2);
-            padding: 0.5rem;
-            border-radius: 5px;
-            width: fit-content;
-            max-width: 100%;
-            display: inline-flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
-
-        .chatbot-message-container {
-            text-align: left;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 0.5rem;
-            border-radius: 5px;
-            width: fit-content;
-            max-width: 100%;
-            display: inline-flex;
-            flex-direction: column;
-            align-items: flex-start;
+            margin: 0.5rem 0rem;
+            /* Increase margin for chatbot messages */
         }
 
         .message-row {
@@ -142,24 +160,27 @@
             align-items: flex-start;
             flex-wrap: wrap;
             margin-bottom: 0.5rem;
+            transition: height 0.5s ease-in-out;
+            /* Add transition for smooth height change */
         }
 
         /* Slider color */
         input[type=range]::-webkit-slider-thumb {
-            background-color: #009688;
+            background-color: #4db6ac;
         }
 
         input[type=range]::-moz-range-thumb {
-            background-color: #009688;
+            background-color: #4db6ac;
         }
 
         input[type=range]::-ms-thumb {
-            background-color: #009688;
+            background-color: #4db6ac;
         }
 
         /* Prism CSS adjustments */
         code[class="lang-python"] {
             font-size: 0.5rem !important;
+            margin: 0;
         }
 
         pre .language-python {
@@ -240,35 +261,46 @@
         .slideIn {
             animation-name: slideIn;
         }
+
+        .btn-secondary {
+            background-image: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            border-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-image: linear-gradient(135deg, #5a6268 0%, #495057 100%);
+            border-color: #5a6268;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <div class="header">
-            <h1>ShulGPT (A chatbot with GPT-4)</h1>
+            <h1>ShulGPT (A Chatbot with GPT-4)</h1>
         </div>
         <div class="chat-container">
             <div id="conversation"></div>
             <form id="text-form">
-                <div class="form-group">
+                <div class="form-group mb-3">
                     <label for="system_message">Chatbot Context:</label>
-                    <input type="text" id="system_message" name="system_message" class="form-control"
+                    <input type="text" id="system_message" name="system_message" class="form-control rounded-pill"
                         value="You are a helpful assistant." required>
                 </div>
-                <div class="form-group">
+                <div class="form-group mb-3">
                     <label for="max_tokens" id="max_tokens_label">Max Tokens:</label>
                     <input type="range" id="max_tokens_range" name="max_tokens_range" min="1" max="2048" value="256"
-                        class="form-range">
+                        class="form-range rounded-pill">
                     <input type="number" id="max_tokens_number" name="max_tokens_number" min="1" max="2048" value="256"
-                        class="form-control mt-2">
+                        class="form-control mt-2 rounded-pill">
                 </div>
-                <div class="form-group">
+                <div class="form-group mb-3">
                     <label for="prompt">Message:</label>
-                    <textarea id="prompt" name="prompt" class="form-control" required></textarea>
+                    <textarea id="prompt" name="prompt" class="form-control rounded-pill" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Send</button>
-                <button type="button" class="btn btn-secondary mt-3" onclick="clearConversation()">Clear</button>
+                <button type="submit" class="btn btn-primary mt-3 rounded-pill">Send</button>
+                <button type="button" class="btn btn-secondary mt-3 rounded-pill"
+                    onclick="clearConversation()">Clear</button>
             </form>
         </div>
         <div class="footer"></div>
@@ -294,6 +326,8 @@
             const message = $('#prompt').val();
             const system_message = $('#system_message').val();
             $('#conversation').append('<div class="message-row"><div class="user-message-container animated slideIn"><p><b class="user-message">You:</b><br>' + escapeHtml(message) + '</p></div></div>');
+            expandConversation();
+            scrollToBottom();
             scrollToBottom();
 
             conversationHistory.push({ role: "user", content: message });
@@ -310,6 +344,7 @@
             $.post("/generate-text", { ...formData, messages: JSON.stringify(conversationHistory) }, function (data) {
                 const formattedResponse = formatResponse(data);
                 $('#conversation').append('<div class="message-row" style="justify-content: flex-start;"><div class="chatbot-message-container animated slideIn"><p><b class="chatbot-message">Chatbot:</b><br>' + formattedResponse + '</p></div></div>');
+                expandConversation();
                 scrollToBottom();
                 Prism.highlightAll();
                 conversationHistory.push({ role: "assistant", content: data });
@@ -325,18 +360,18 @@
         }
 
         function formatResponse(data) {
-    if (typeof data !== 'string') {
-        console.error('formatResponse: data is not a string:', data);
-        return '';
-    }
+            if (typeof data !== 'string') {
+                console.error('formatResponse: data is not a string:', data);
+                return '';
+            }
 
-    const codeRegex = /```([\s\S]*?)```/g;
+            const codeRegex = /```([\s\S]*?)```/g;
 
-    return data.replace(codeRegex, function (match, codeSnippet) {
-        const trimmedCodeSnippet = escapeHtml(codeSnippet.trim());
-        return '<pre><code class="language-python">' + trimmedCodeSnippet + '</code></pre>';
-    });
-}
+            return data.replace(codeRegex, function (match, codeSnippet) {
+                const trimmedCodeSnippet = escapeHtml(codeSnippet.trim());
+                return '<pre><code class="language-python">' + trimmedCodeSnippet + '</code></pre>';
+            });
+        }
 
         function scrollToBottom() {
             const conversation = document.getElementById("conversation");
@@ -371,7 +406,19 @@
             }
         }
 
+        function expandConversation() {
+            const conversation = document.getElementById("conversation");
+            conversation.style.maxHeight = (conversation.scrollHeight + 50) + "px";
+        }
+
         updateSliderAvailability();
+
+        $("#prompt").on("keypress", function (event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                $("#text-form").submit();
+            }
+        });
     </script>
 </body>
 
