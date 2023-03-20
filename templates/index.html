@@ -309,7 +309,7 @@
 
             $.post("/generate-text", { ...formData, messages: JSON.stringify(conversationHistory) }, function (data) {
                 const formattedResponse = formatResponse(data);
-                $('#conversation').append('<div class="message-row" style="justify-content: flex-start;"><div class="chatbot-message-container animated slideIn"><p><b class="chatbot-message">Chatbot:</b><br>' + escapeHtml(formattedResponse) + '</p></div></div>');
+                $('#conversation').append('<div class="message-row" style="justify-content: flex-start;"><div class="chatbot-message-container animated slideIn"><p><b class="chatbot-message">Chatbot:</b><br>' + formattedResponse + '</p></div></div>');
                 scrollToBottom();
                 Prism.highlightAll();
                 conversationHistory.push({ role: "assistant", content: data });
@@ -325,18 +325,18 @@
         }
 
         function formatResponse(data) {
-            if (typeof data !== 'string') {
-                console.error('formatResponse: data is not a string:', data);
-                return '';
-            }
+    if (typeof data !== 'string') {
+        console.error('formatResponse: data is not a string:', data);
+        return '';
+    }
 
-            const codeRegex = /```([\s\S]*?)```/g;
+    const codeRegex = /```([\s\S]*?)```/g;
 
-            return data.replace(codeRegex, function (match, codeSnippet) {
-                const trimmedCodeSnippet = codeSnippet.trim();
-                return '<pre><code class="language-python">' + trimmedCodeSnippet + '</code></pre>';
-            });
-        }
+    return data.replace(codeRegex, function (match, codeSnippet) {
+        const trimmedCodeSnippet = escapeHtml(codeSnippet.trim());
+        return '<pre><code class="language-python">' + trimmedCodeSnippet + '</code></pre>';
+    });
+}
 
         function scrollToBottom() {
             const conversation = document.getElementById("conversation");
