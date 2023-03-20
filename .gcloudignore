@@ -1,0 +1,12 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+*.dist-info/
+*.test
+.env
+.vercel
+vercel.json
