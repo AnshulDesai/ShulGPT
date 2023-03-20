@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ShulGPT</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/components/prism-python.min.js"></script>
+    <style>
+        body,
+        html {
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #212121 0%, #303030 100%);
+            color: #f0f0f0;
+        }
+
+        h1 {
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            color: #009688;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 2rem auto;
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .header {
+            flex-shrink: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .chat-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding-bottom: 0.5rem;
+        }
+
+        #conversation {
+            margin-top: 1rem;
+            border: 1px solid #424242;
+            padding: 1rem;
+            border-radius: 5px;
+            background-color: #333;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom scrollbar */
+        #conversation::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #conversation::-webkit-scrollbar-thumb {
+            background-color: #009688;
+            border-radius: 4px;
+        }
+
+        .btn-primary {
+            background-color: #009688;
+            border-color: #009688;
+        }
+
+        .btn-primary:hover {
+            background-color: #00796b;
+            border-color: #00796b;
+        }
+
+        .btn-primary:focus {
+            box-shadow: 0 0 0 0.25rem rgba(0, 150, 136, 0.25);
+        }
+
+        .form-control {
+            background-color: #424242;
+            color: #f0f0f0;
+            border-color: #424242;
+        }
+
+        .form-control:focus {
+            background-color: #424242;
+            color: #f0f0f0;
+            border-color: #009688;
+            box-shadow: 0 0 0 0.25rem rgba(0, 150, 136, 0.25);
+        }
+
+        .user-message {
+            color: #009688;
+            word-wrap: break-word;
+            font-size: 0.8em;
+        }
+
+        .chatbot-message {
+            color: #009688;
+            word-wrap: break-word;
+            font-size: 0.8em;
+        }
+
+        .user-message-container {
+            text-align: right;
+            background-color: rgba(0, 150, 136, 0.2);
+            padding: 0.5rem;
+            border-radius: 5px;
+            width: fit-content;
+            max-width: 100%;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .chatbot-message-container {
+            text-align: left;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem;
+            border-radius: 5px;
+            width: fit-content;
+            max-width: 100%;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .message-row {
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Slider color */
+        input[type=range]::-webkit-slider-thumb {
+            background-color: #009688;
+        }
+
+        input[type=range]::-moz-range-thumb {
+            background-color: #009688;
+        }
+
+        input[type=range]::-ms-thumb {
+            background-color: #009688;
+        }
+
+        /* Prism CSS adjustments */
+        code[class="lang-python"] {
+            font-size: 0.5rem !important;
+        }
+
+        pre .language-python {
+            margin: 0;
+            padding: 0;
+        }
+
+        .token.keyword {
+            color: #64ffda;
+        }
+
+        .token.string {
+            color: #69f0ae;
+        }
+
+        .token.number {
+            color: #b2ff59;
+        }
+
+        .token.operator {
+            color: #ff5252;
+        }
+
+        .token.punctuation {
+            color: #80d8ff;
+        }
+
+        .token.function {
+            color: #ff4081;
+        }
+
+        .token.comment {
+            color: #616161;
+        }
+
+        .footer {
+            flex-shrink: 0;
+            margin-top: 0.5rem;
+        }
+
+        /* Adjust the form */
+        form {
+            margin-bottom: 1rem;
+        }
+
+        /* Add animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            0% {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .animated {
+            animation-duration: 1s;
+            animation-fill-mode: both;
+        }
+
+        .fadeIn {
+            animation-name: fadeIn;
+        }
+
+        .slideIn {
+            animation-name: slideIn;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ShulGPT (A chatbot with GPT-4)</h1>
+        </div>
+        <div class="chat-container">
+            <div id="conversation"></div>
+            <form id="text-form">
+                <div class="form-group">
+                    <label for="system_message">Chatbot Context:</label>
+                    <input type="text" id="system_message" name="system_message" class="form-control"
+                        value="You are a helpful assistant." required>
+                </div>
+                <div class="form-group">
+                    <label for="max_tokens">Max Tokens:</label>
+                    <input type="range" id="max_tokens_range" name="max_tokens_range" min="1" max="2048" value="256"
+                        class="form-range">
+                    <input type="number" id="max_tokens_number" name="max_tokens_number" min="1" max="2048" value="256"
+                        class="form-control mt-2">
+                </div>
+                <div class="form-group">
+                    <label for="prompt">Message:</label>
+                    <textarea id="prompt" name="prompt" class="form-control" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Send</button>
+                <button type="button" class="btn btn-secondary mt-3" onclick="clearConversation()">Clear</button>
+            </form>
+        </div>
+        <div class="footer"></div>
+    </div>
+
+    <script>
+        let conversationHistory = [];
+
+        function updateMaxTokensValue() {
+            $("#max_tokens_value").text($("#max_tokens_range").val());
+            $("#max_tokens_number").val($("#max_tokens_range").val());
+        }
+
+        $("#max_tokens_range").on("input", updateMaxTokensValue);
+        $("#max_tokens_number").on("input", function () {
+            $("#max_tokens_range").val($("#max_tokens_number").val());
+            updateMaxTokensValue();
+        });
+        updateMaxTokensValue();
+
+        $("#text-form").submit(function (e) {
+            e.preventDefault();
+            const message = $('#prompt').val();
+            const system_message = $('#system_message').val();
+            $('#conversation').append('<div class="message-row"><div class="user-message-container animated slideIn"><p><b class="user-message">You:</b><br>' + escapeHtml(message) + '</p></div></div>');
+            scrollToBottom();
+
+            conversationHistory.push({ role: "user", content: message });
+
+            const formData = {
+                prompt: message,
+                max_tokens: $('#max_tokens_number').val(),
+                system_message: $('#system_message').val()
+            };
+            console.log('Form data:', formData);
+
+            $('#prompt').val('');
+
+            $.post("/generate-text", { ...formData, messages: JSON.stringify(conversationHistory) }, function (data) {
+                const formattedResponse = formatResponse(data);
+                $('#conversation').append('<div class="message-row" style="justify-content: flex-start;"><div class="chatbot-message-container animated slideIn"><p><b class="chatbot-message">Chatbot:</b><br>' + escapeHtml(formattedResponse) + '</p></div></div>');
+                scrollToBottom();
+                Prism.highlightAll();
+                conversationHistory.push({ role: "assistant", content: data });
+            });
+        });
+
+        function clearConversation() {
+            $('#conversation').html('');
+            conversationHistory = [];
+            $.post("/clear-context", {}, function (data) {
+                console.log(data);
+            });
+        }
+
+        function formatResponse(data) {
+            const codeRegex = /```([\s\S]*?)```/g;
+
+            return data.replace(codeRegex, function (match, codeSnippet) {
+                const trimmedCodeSnippet = codeSnippet.trim();
+                return '<pre><code class="language-python">' + trimmedCodeSnippet + '</code></pre>';
+            });
+        }
+
+        function scrollToBottom() {
+            const conversation = document.getElementById("conversation");
+            conversation.scrollTop = conversation.scrollHeight;
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        $("#text-form").addClass("animated fadeIn");
+        $("button").addClass("animated fadeIn");
+    </script>
+</body>
+
+</html>
