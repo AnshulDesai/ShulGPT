@@ -325,6 +325,11 @@
         }
 
         function formatResponse(data) {
+            if (typeof data !== 'string') {
+                console.error('formatResponse: data is not a string:', data);
+                return '';
+            }
+
             const codeRegex = /```([\s\S]*?)```/g;
 
             return data.replace(codeRegex, function (match, codeSnippet) {
@@ -359,8 +364,8 @@
                 $("#max_tokens_range").removeAttr("disabled");
                 $("#max_tokens_number").removeAttr("disabled");
             } else {
-                $("#max_tokens_range").attr("disabled", true);
-                $("#max_tokens_number").attr("disabled", true);
+                $("#max_tokens_range").attr("disabled", true).hide();
+                $("#max_tokens_number").attr("disabled", true).hide();
             }
         }
 
